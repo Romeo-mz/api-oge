@@ -1,5 +1,4 @@
 from api import *
-from getpass import getpass
 
 def main():
     api = API()
