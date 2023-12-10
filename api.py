@@ -1,7 +1,6 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from getpass import getpass
 from dotenv import load_dotenv
 import os
 
@@ -17,7 +16,7 @@ class API:
         self.grades_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/stylesheets/etu/bilanEtu.xhtml"
         self.session = requests.Session()
 
-        print(f"API created")
+        print(f"API created with username {self.username} and password {self.password}")
 
     def get(self, url):
         print(f"Get {url}")
@@ -51,7 +50,7 @@ class API:
         response = self.session.get(self.grades_url)
         return response.text
     
-    def getAbsences(self, semester):
+    def getAbsencesBySemester(self, semester):
         absencesPage = self.selectAbsencesSemester(semester)
 
         soup = BeautifulSoup(absencesPage, 'html.parser')
@@ -67,6 +66,56 @@ class API:
 
         return absences
 
+    def getAllAbsences(self):
+        all_absences = []
+        min_semester = self.getMinSemester()
+        max_semester = self.getMaxSemester()
+        total_semesters = max_semester - min_semester + 1
+        print(f"Found {total_semesters} semesters")
+        for semester in range(1, total_semesters + 1):
+            absences = self.getAbsencesBySemester(semester)
+            all_absences.append(absences)
+        return all_absences
+        
+    def getMinSemester(self):
+        absencesPage = self.getAbsencesPage()
+
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        min_semester_text = soup.find('span', class_='ui-menuitem-text').get_text()
+
+        min_semester = int(min_semester_text.split()[-1])
+        return min_semester
+
+    def getMaxSemester(self):
+        absencesPage = self.getAbsencesPage()
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        
+        semesters = soup.find_all('span', class_='ui-menuitem-text')
+        highest_semester = 0
+        
+        for semester in semesters:
+            semester_text = semester.get_text()
+            semester_number = int(semester_text.split(' ')[-1].split('Semestre')[-1])
+            highest_semester = max(highest_semester, semester_number)
+
+        return highest_semester if highest_semester > 0 else "No semesters found"
+
+    def getCurrentStudyYear(self):
+        absencesPage = self.getAbsencesPage()
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        
+        span_elements = soup.find_all('span', class_='ui-menuitem-text')
+        highest_year = 0
+        
+        for span in span_elements:
+            text = span.get_text()
+            year = int(text.split(' ')[0][0]) if any(s in text for s in ['1A', '2A', '3A', '4A', '5A']) else 0
+            highest_year = max(highest_year, year)
+
+        return f"{highest_year}A" if highest_year > 0 else "No year found"
+
+
+    
     def getGrades(self, semester):
         gradesPage = self.selectGradesSemester(semester)
 
