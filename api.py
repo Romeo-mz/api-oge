@@ -68,12 +68,53 @@ class API:
 
     def getAllAbsences(self):
         all_absences = []
+        min_semester = self.getMinSemester()
         max_semester = self.getMaxSemester()
+        total_semesters = max_semester - min_semester + 1
+        print(f"Found {total_semesters} semesters")
+        for semester in range(1, total_semesters + 1):
+            absences = self.getAbsencesBySemester(semester)
+            all_absences.append(absences)
         return all_absences
         
+    def getMinSemester(self):
+        absencesPage = self.getAbsencesPage()
+
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        min_semester_text = soup.find('span', class_='ui-menuitem-text').get_text()
+
+        min_semester = int(min_semester_text.split()[-1])
+        return min_semester
+
     def getMaxSemester(self):
-        # To do later...
-        return 0
+        absencesPage = self.getAbsencesPage()
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        
+        semesters = soup.find_all('span', class_='ui-menuitem-text')
+        highest_semester = 0
+        
+        for semester in semesters:
+            semester_text = semester.get_text()
+            semester_number = int(semester_text.split(' ')[-1].split('Semestre')[-1])
+            highest_semester = max(highest_semester, semester_number)
+
+        return highest_semester if highest_semester > 0 else "No semesters found"
+
+    def getCurrentStudyYear(self):
+        absencesPage = self.getAbsencesPage()
+        soup = BeautifulSoup(absencesPage, 'html.parser')
+        
+        span_elements = soup.find_all('span', class_='ui-menuitem-text')
+        highest_year = 0
+        
+        for span in span_elements:
+            text = span.get_text()
+            year = int(text.split(' ')[0][0]) if any(s in text for s in ['1A', '2A', '3A', '4A', '5A']) else 0
+            highest_year = max(highest_year, year)
+
+        return f"{highest_year}A" if highest_year > 0 else "No year found"
+
+
     
     def getGrades(self, semester):
         gradesPage = self.selectGradesSemester(semester)
