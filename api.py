@@ -1,7 +1,6 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from getpass import getpass
 from dotenv import load_dotenv
 import os
 
@@ -17,7 +16,7 @@ class API:
         self.grades_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/stylesheets/etu/bilanEtu.xhtml"
         self.session = requests.Session()
 
-        print(f"API created")
+        print(f"API created with username {self.username} and password {self.password}")
 
     def get(self, url):
         print(f"Get {url}")
@@ -51,7 +50,7 @@ class API:
         response = self.session.get(self.grades_url)
         return response.text
     
-    def getAbsences(self, semester):
+    def getAbsencesBySemester(self, semester):
         absencesPage = self.selectAbsencesSemester(semester)
 
         soup = BeautifulSoup(absencesPage, 'html.parser')
@@ -67,6 +66,15 @@ class API:
 
         return absences
 
+    def getAllAbsences(self):
+        all_absences = []
+        max_semester = self.getMaxSemester()
+        return all_absences
+        
+    def getMaxSemester(self):
+        # To do later...
+        return 0
+    
     def getGrades(self, semester):
         gradesPage = self.selectGradesSemester(semester)
 
