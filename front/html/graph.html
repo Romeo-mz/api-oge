@@ -9,9 +9,26 @@
 <body>
     <canvas id="lineCharts" width="900" height="900"></canvas>
     <script>
-        var labels = {{ labels | safe }};
-        var values = {{ values | safe }};
+        var data = {
+            labels: {{ data.labels | safe}},
+            values: {{ data.labels | safe}}
+        };
+        var ctx = document.getElementById('lineCharts').getContext('2d');
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Attendance Status',
+                    data: data.values,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+            }
+        });
     </script>
-    <script src="js/graph.js"></script>
 </body>
 </html>

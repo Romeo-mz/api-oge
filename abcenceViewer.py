@@ -11,13 +11,14 @@ def home():
     api.login()
     absences = api.getAllAbsences()
     formatted_absences = format_absence_data(absences)
-
     labels = [absence['course'] for absence in formatted_absences]
     values = [absence['status'] for absence in formatted_absences]
 
+    print(values)
+    print(labels)
     data = {
-        'labels': json.dumps(labels),  # Convert Python list to JSON string
-        'values': json.dumps(values)   # Convert Python list to JSON string
+        'labels': labels,
+        'values': values
     }
     return render_template('graph.html', data=data)
 
