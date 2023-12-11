@@ -10,8 +10,8 @@
     <canvas id="lineCharts" width="900" height="900"></canvas>
     <script>
         var data = {
-            labels: {{ data.labels | safe}},
-            values: {{ data.labels | safe}}
+            labels: {{ data['labels'] | safe}},
+            values: {{ data['values'] | safe}}
         };
         var ctx = document.getElementById('lineCharts').getContext('2d');
         var lineChart = new Chart(ctx, {
