@@ -52,7 +52,7 @@ class API:
     
     def getAbsencesBySemester(self, semester):
         absencesPage = self.selectAbsencesSemester(semester)
-
+        print(absencesPage)
         soup = BeautifulSoup(absencesPage, 'html.parser')
 
         absences_table = soup.find_all('tr', class_='ui-widget-content')

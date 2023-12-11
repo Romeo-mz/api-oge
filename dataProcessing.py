@@ -54,9 +54,9 @@ def main():
     api = API()
     api.login()
     absences = api.getAllAbsences()
-
+    print(absences)
     formatted_absences = format_absence_data(absences)
-
+    print(formatted_absences)
     absences_course = absences_by_course(formatted_absences)
     print(absences_course)
 
