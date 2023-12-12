@@ -1,13 +1,15 @@
 from api import *
-from getpass import getpass
 
 def main():
     api = API()
     api.login()
-    absences_s2 = api.getAbsencesBySemester(50)
-    print(absences_s2)
     absences = api.getAllAbsences()
     print(absences)
+    # print(api.getAbsencesBySemester(3))
+    
+    # print(api.getAbsencesBySemester(2))
 
+    # print(api.getAbsencesBySemester(1))
+    
 if __name__ == "__main__":
     main()

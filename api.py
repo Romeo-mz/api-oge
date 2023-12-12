@@ -52,7 +52,6 @@ class API:
     
     def getAbsencesBySemester(self, semester):
         absencesPage = self.selectAbsencesSemester(semester)
-
         soup = BeautifulSoup(absencesPage, 'html.parser')
 
         absences_table = soup.find_all('tr', class_='ui-widget-content')
@@ -72,7 +71,7 @@ class API:
         max_semester = self.getMaxSemester()
         total_semesters = max_semester - min_semester + 1
         print(f"Found {total_semesters} semesters")
-        for semester in range(1, total_semesters + 1):
+        for semester in range(total_semesters, 0, -1):
             absences = self.getAbsencesBySemester(semester)
             all_absences.append(absences)
         return all_absences
