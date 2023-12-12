@@ -3,7 +3,7 @@ from api import API
 from dataProcessing import format_absence_data, absences_by_course
 import json
 
-app = Flask(__name__, template_folder='front/html', static_folder='front/js')
+app = Flask(__name__, template_folder='front/html')
 
 @app.route('/')
 def home():
@@ -12,7 +12,7 @@ def home():
     absences = api.getAllAbsences()
     formatted_absences = format_absence_data(absences)
     absences_course_json = absences_by_course(formatted_absences)
-    
+    print(absences_course_json)
     # Parse the JSON back to a Python object
     absences_course = json.loads(absences_course_json)
 
