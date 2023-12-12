@@ -12,7 +12,6 @@ def home():
     absences = api.getAllAbsences()
     formatted_absences = format_absence_data(absences)
     absences_course_json = absences_by_course(formatted_absences)
-    print(absences_course_json)
     # Parse the JSON back to a Python object
     absences_course = json.loads(absences_course_json)
 

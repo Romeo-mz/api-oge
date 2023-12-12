@@ -10,7 +10,10 @@ def format_absence_data(absences):
                     process_absence(entry)  # Recursively handle deeper levels
                 else:
                     course_info = entry[0].split('\n')  # Split course info
-                    if len(course_info) == 2:
+                    print(entry)
+
+                    # Check if entry has enough elements before accessing them
+                    if len(entry) >= 4:
                         course = course_info[0].strip()
                         professor = entry[1].strip()
                         date_time = entry[2].strip()
@@ -21,6 +24,9 @@ def format_absence_data(absences):
                             'date_time': date_time,
                             'status': status
                         })
+                    else:
+                        # Handle cases where the entry doesn't have enough elements
+                        print("Entry doesn't have enough elements:", entry)
 
     process_absence(absences)
     return formatted_absences
@@ -41,9 +47,9 @@ def absences_by_course(absences):
         subject = extract_subject(course)
         
         if subject in absences_by_course:
-            absences_by_course[subject] += 1
+            absences_by_course[subject] += 2
         else:
-            absences_by_course[subject] = 1  
+            absences_by_course[subject] = 2
     result = [{'course': course, 'total': total} for course, total in absences_by_course.items()]
     json_result = json.dumps(result)
     return json_result
