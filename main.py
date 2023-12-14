@@ -3,7 +3,7 @@ from api import *
 def main():
     api = API()
     api.login()
-    absences = api.getAllAbsences()
+    absences = api.get_all_absences()
     print(absences)
     
     # print(api.getAbsencesBySemester(3))

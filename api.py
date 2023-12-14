@@ -6,6 +6,7 @@ import os
 
 load_dotenv()
 
+
 class API:
     def __init__(self, user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD")):
         self.username = user
@@ -40,29 +41,29 @@ class API:
             print("Login failed")
             return False
 
-    def loginCallback(self):
-        loginCallbackUrl = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback"
-        response = self.session.get(loginCallbackUrl)
+    def login_callback(self):
+        login_callback_url = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback"
+        response = self.session.get(login_callback_url)
         print(response.text)
-        
-    def getAbsencesPage(self):
+
+    def get_absences_page(self):
         print("Get absences page...")
         response = self.session.get(self.absences_url)
         return response.text
-    
+
     def check_login(self, username, password):
         self.username = username
         self.password = password
         return self.login()
-    
-    def getGradesPage(self):
+
+    def get_grades_page(self):
         print("Get grades page...")
         response = self.session.get(self.grades_url)
         return response.text
-    
-    def getAbsencesBySemester(self, semester):
-        absencesPage = self.selectAbsencesSemester(semester)
-        soup = BeautifulSoup(absencesPage, 'html.parser')
+
+    def get_absences_by_semester(self, semester):
+        absences_page = self.select_absences_semester(semester)
+        soup = BeautifulSoup(absences_page, 'html.parser')
 
         absences_table = soup.find_all('tr', class_='ui-widget-content')
         print(f"Found {len(absences_table)} absences")
@@ -75,33 +76,33 @@ class API:
 
         return absences
 
-    def getAllAbsences(self):
+    def get_all_absences(self):
         all_absences = []
-        min_semester = self.getMinSemester()
-        max_semester = self.getMaxSemester()
+        min_semester = self.get_min_semester()
+        max_semester = self.get_max_semester()
         total_semesters = max_semester - min_semester + 1
         print(f"Found {total_semesters} semesters")
         for semester in range(total_semesters, 0, -1):
-            absences = self.getAbsencesBySemester(semester)
+            absences = self.get_absences_by_semester(semester)
             all_absences.append(absences)
         return all_absences
-        
-    def getMinSemester(self):
-        absencesPage = self.getAbsencesPage()
 
-        soup = BeautifulSoup(absencesPage, 'html.parser')
+    def get_min_semester(self):
+        absences_page = self.get_absences_page()
+
+        soup = BeautifulSoup(absences_page, 'html.parser')
         min_semester_text = soup.find('span', class_='ui-menuitem-text').get_text()
 
         min_semester = int(min_semester_text.split()[-1])
         return min_semester
 
-    def getMaxSemester(self):
-        absencesPage = self.getAbsencesPage()
-        soup = BeautifulSoup(absencesPage, 'html.parser')
-        
+    def get_max_semester(self):
+        absences_page = self.get_absences_page()
+        soup = BeautifulSoup(absences_page, 'html.parser')
+
         semesters = soup.find_all('span', class_='ui-menuitem-text')
         highest_semester = 0
-        
+
         for semester in semesters:
             semester_text = semester.get_text()
             semester_number = int(semester_text.split(' ')[-1].split('Semestre')[-1])
@@ -109,13 +110,13 @@ class API:
 
         return highest_semester if highest_semester > 0 else "No semesters found"
 
-    def getCurrentStudyYear(self):
-        absencesPage = self.getAbsencesPage()
-        soup = BeautifulSoup(absencesPage, 'html.parser')
-        
+    def get_current_study_year(self):
+        absences_page = self.get_absences_page()
+        soup = BeautifulSoup(absences_page, 'html.parser')
+
         span_elements = soup.find_all('span', class_='ui-menuitem-text')
         highest_year = 0
-        
+
         for span in span_elements:
             text = span.get_text()
             year = int(text.split(' ')[0][0]) if any(s in text for s in ['1A', '2A', '3A', '4A', '5A']) else 0
@@ -123,12 +124,10 @@ class API:
 
         return f"{highest_year}A" if highest_year > 0 else "No year found"
 
+    def get_grades(self, semester):
+        grades_page = self.select_grades_semester(semester)
 
-    
-    def getGrades(self, semester):
-        gradesPage = self.selectGradesSemester(semester)
-
-        soup = BeautifulSoup(gradesPage, 'html.parser')
+        soup = BeautifulSoup(grades_page, 'html.parser')
 
         # To do later...
 
@@ -136,7 +135,7 @@ class API:
 
         return grades
 
-    def selectAbsencesSemester(self, semester):
+    def select_absences_semester(self, semester):
         headers = {
             "Faces-Request": "partial/ajax",
             "X-Requested-With": "XMLHttpRequest",
@@ -145,10 +144,10 @@ class API:
 
         data = {
             "javax.faces.partial.ajax": "true",
-            "javax.faces.source": "ficheEtudiantForm:j_id_16_" + str(semester),
+            "javax.faces.source": f"ficheEtudiantForm:j_id_16_{semester}",
             "javax.faces.partial.execute": "@all",
             "javax.faces.partial.render": "ficheEtudiantForm:panel",
-            "ficheEtudiantForm:j_id_16_" + str(semester): "ficheEtudiantForm:j_id_16_2",
+            f"ficheEtudiantForm:j_id_16_{semester}": "ficheEtudiantForm:j_id_16_2",
             "ficheEtudiantForm_SUBMIT": "1",
             "javax.faces.ViewState": "0"
         }
@@ -161,7 +160,7 @@ class API:
 
         return content
 
-    def selectGradesSemester(self, semester):
+    def select_grades_semester(self, semester):
         headers = {
             "Faces-Request": "partial/ajax",
             "X-Requested-With": "XMLHttpRequest",
@@ -187,3 +186,4 @@ class API:
         content = response.text.split("![CDATA[")[1].split("]]")[0]
 
         return content
+s

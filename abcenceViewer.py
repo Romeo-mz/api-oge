@@ -8,7 +8,7 @@ api = API()
 
 def fetch_absences_data():
     try:
-        absences = api.getAllAbsences()
+        absences = api.get_all_absences()
         formatted_absences = format_absence_data(absences)
         absences_course_json = absences_by_course(formatted_absences)
         return json.loads(absences_course_json)
