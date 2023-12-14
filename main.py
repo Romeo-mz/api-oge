@@ -5,6 +5,7 @@ def main():
     api.login()
     absences = api.getAllAbsences()
     print(absences)
+    
     # print(api.getAbsencesBySemester(3))
     
     # print(api.getAbsencesBySemester(2))

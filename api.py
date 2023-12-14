@@ -40,6 +40,11 @@ class API:
             print("Login failed")
             return False
 
+    def loginCallback(self):
+        loginCallbackUrl = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback"
+        response = self.session.get(loginCallbackUrl)
+        print(response.text)
+        
     def getAbsencesPage(self):
         print("Get absences page...")
         response = self.session.get(self.absences_url)
