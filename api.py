@@ -50,6 +50,11 @@ class API:
         response = self.session.get(self.absences_url)
         return response.text
     
+    def check_login(self, username, password):
+        self.username = username
+        self.password = password
+        return self.login()
+    
     def getGradesPage(self):
         print("Get grades page...")
         response = self.session.get(self.grades_url)
