@@ -186,4 +186,3 @@ class API:
         content = response.text.split("![CDATA[")[1].split("]]")[0]
 
         return content
-s

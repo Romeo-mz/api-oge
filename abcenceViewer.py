@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__, template_folder='front', static_folder='front/static')
 api = API()
-
+app.secret_key = 'secret'
 def fetch_absences_data():
     try:
         absences = api.get_all_absences()
@@ -21,7 +21,7 @@ def fetch_absences_data():
 def home():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    
+     
     absences_course = fetch_absences_data()
     if not absences_course:
         # Handle absence data fetching failure
