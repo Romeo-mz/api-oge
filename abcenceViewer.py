@@ -2,10 +2,11 @@ from flask import Flask, render_template, redirect, url_for, session, request
 from api import API
 from dataProcessing import format_absence_data, absences_by_course
 import json
+import os
 
 app = Flask(__name__, template_folder='front', static_folder='front/static')
 api = API()
-app.secret_key = 'secret'
+app.secret_key = os.getenv("SECRET_KEY")
 def fetch_absences_data():
     try:
         absences = api.get_all_absences()
