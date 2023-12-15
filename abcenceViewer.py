@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, session, request
+from flask import Flask, render_template, redirect, url_for, session, request, flash
 from api import API
 from dataProcessing import format_absence_data, absences_by_course
 import json
@@ -43,11 +43,16 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
+        if not username or not password:
+            flash('Please enter both username and password', 'error')
+            return render_template('static/html/login.html')
+
         if api.check_login(username, password):
             session['logged_in'] = True
             return redirect(url_for('home'))
         else:
-            return render_template('static/html/login.html', error=True)
+            flash('Invalid credentials', 'error')
+            return render_template('static/html/login.html')
 
     return render_template('static/html/login.html')
 
