@@ -49,12 +49,10 @@ class API:
     def login_callback(self):
         login_callback_url = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback"
         response = self.session.get(login_callback_url)
-        print(response.text)
 
     def get_absences_page(self):
         print("Get absences page...")
         response = self.session.get(self.absences_url)
-        print(self.session.cookies.get_dict())
         return response.text
 
     def check_login(self, username, password):

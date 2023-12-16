@@ -34,8 +34,6 @@ def handle_login():
 
     if api.check_login(username, password):
         session['logged_in'] = True
-        session['api_username'] = username
-        session['api_password'] = password  # This is not secure, but it's just a demo
 
         return redirect(url_for('home'))
     else:
@@ -47,10 +45,6 @@ def handle_login():
 def home():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-
-    # Retrieve username and password from session to recreate API instance
-    username = session.get('api_username')
-    password = session.get('api_password')
 
     absences_course = fetch_absences_data(api)
     if not absences_course:
