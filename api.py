@@ -36,11 +36,16 @@ class API:
 
         if "Connexion - CAS" not in login_response.text:
             print("Login successful")
+
             return True
         else:
             print("Login failed")
             return False
-
+        
+    def get_user(self):
+        user = self.username
+        return user
+    
     def login_callback(self):
         login_callback_url = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback"
         response = self.session.get(login_callback_url)
@@ -49,6 +54,7 @@ class API:
     def get_absences_page(self):
         print("Get absences page...")
         response = self.session.get(self.absences_url)
+        print(self.session.cookies.get_dict())
         return response.text
 
     def check_login(self, username, password):
@@ -81,6 +87,7 @@ class API:
         min_semester = self.get_min_semester()
         max_semester = self.get_max_semester()
         total_semesters = max_semester - min_semester + 1
+        print("Get all absences...")
         print(f"Found {total_semesters} semesters")
         for semester in range(total_semesters, 0, -1):
             absences = self.get_absences_by_semester(semester)
