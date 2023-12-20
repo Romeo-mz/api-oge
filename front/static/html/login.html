@@ -1,0 +1,47 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" >
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        
+        {% endwith %}
+
+        <div class="login-wrap">
+            <h2>Login oge</h2>
+            <form action="{{ url_for('login') }}" method="POST" class="form">
+                <input type="text" placeholder="username" name="username" />
+                <input type="password" placeholder="password" name="password" id="password" />
+                <button type="button" onclick="passPassword()">View pass</button>
+                <button type="submit">Sign in</button>
+            </form>
+            <p>En vous connectant vous acceptez de partager vos données d'absence</p>
+        </div>
+
+        <script>
+            function passPassword() {
+                var password = document.getElementById("password");
+                if (password.type === "password") {
+                    password.type = "text";
+                } else {
+                    password.type = "password";
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
