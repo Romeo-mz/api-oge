@@ -20,6 +20,7 @@ class API:
         return self.session.get(url)
 
     def login(self):
+        self.session.close()
         response = self.session.get(self.login_url)
         execution = re.search(r'name="execution" value="([^"]+)"', response.text).group(1)
         payload = {
